@@ -2863,22 +2863,48 @@ async function main() {
             }
           },
           outputSchema: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                id: { 
-                  type: "string", 
-                  format: "uuid",
-                  description: "Label UUID" 
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
                 },
-                name: { 
-                  type: "string", 
-                  description: "Label name" 
-                }
+                description: "Array of errors if status is ERROR"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Label UUID" 
+                    },
+                    name: { 
+                      type: "string", 
+                      description: "Label name" 
+                    }
+                  }
+                },
+                description: "Array of label objects"
               }
-            },
-            description: "Array of label objects"
+            }
           }
         },
         {
@@ -2895,22 +2921,48 @@ async function main() {
             required: ["workspaceId"]
           },
           outputSchema: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                id: { 
-                  type: "string", 
-                  format: "uuid",
-                  description: "Label UUID" 
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
                 },
-                name: { 
-                  type: "string", 
-                  description: "Label name" 
-                }
+                description: "Array of errors if status is ERROR"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Label UUID" 
+                    },
+                    name: { 
+                      type: "string", 
+                      description: "Label name" 
+                    }
+                  }
+                },
+                description: "Array of label objects for the workspace"
               }
-            },
-            description: "Array of label objects for the workspace"
+            }
           }
         }
       ]

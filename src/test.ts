@@ -1,4 +1,5 @@
 import { leanixClient } from "./leanix/client.js";
+import { getLabelsByWorkspaceTool } from "./tools/getLabelsByWorkspace.js";
 import { getTechnicalUsersTool } from "./tools/getTechnicalUsers.js";
 import { getUsersTool } from "./tools/getUsers.js";
 
@@ -23,6 +24,11 @@ async function main() {
         const technicalUsersResponse = await getTechnicalUsersTool(leanix, { workspaceId });
         console.log("Technical users:");
         console.log(JSON.stringify(technicalUsersResponse, null, 2));
+
+        // Get labels for workspace
+        const labelsResponse = await getLabelsByWorkspaceTool(leanix, { workspaceId });
+        console.log("Labels:");
+        console.log(JSON.stringify(labelsResponse, null, 2));
     } catch (error: any) {
         console.error("Error fetching user details:", error.message);
     }
