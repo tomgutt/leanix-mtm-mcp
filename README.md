@@ -4,7 +4,7 @@ Integrate the LeanIX Multi-Tenant Management (MTM) API into agentic workflows vi
 
 ## Tools
 
-This MCP server provides 13 read-only tools for accessing LeanIX MTM data:
+This MCP server provides 24 read-only tools for accessing LeanIX MTM data:
 
 ### Account Management
 1. `get_accounts` - List or search all accounts with pagination
@@ -28,12 +28,31 @@ This MCP server provides 13 read-only tools for accessing LeanIX MTM data:
 
 ### Instance Management
 11. `get_instances` - List all instances with filtering and pagination
+12. `get_instance` - Retrieve a single instance by UUID
 
 ### Event Management
-12. `get_events` - Retrieve all events with date filtering and pagination
+13. `get_events` - Retrieve all events with date filtering and pagination
+14. `get_event` - Retrieve a single event by UUID
 
 ### Technical User Management
-13. `get_technical_users` - List or search all technical users with pagination
+15. `get_technical_users` - List or search all technical users with pagination
+16. `get_technical_user` - Retrieve a single technical user by UUID
+
+### Domain Management
+17. `get_domains` - List all domains with filtering (FQDN, instance) and pagination
+18. `get_domain` - Retrieve a single domain by UUID
+
+### Identity Provider Management
+19. `get_identity_providers` - List all identity providers with filtering and pagination
+20. `get_identity_provider` - Retrieve a single identity provider by UUID
+
+### Custom Feature Management
+21. `get_custom_features` - List all custom features with pagination
+22. `get_custom_feature` - Retrieve a single custom feature by UUID
+
+### Label Management
+23. `get_labels` - Get all labels (optionally filtered by name)
+24. `get_labels_by_workspace` - Get all labels attached to a specific workspace
 
 ## Setup
 
