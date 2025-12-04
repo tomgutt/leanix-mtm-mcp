@@ -2,8 +2,19 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { searchMessagesTool } from "./tools/searchMessages.js";
-import { getMessageThreadTool } from "./tools/getMessageThread.js";
+import { getAccountsTool } from "./tools/getAccounts.js";
+import { getAccountTool } from "./tools/getAccount.js";
+import { getWorkspacesTool } from "./tools/getWorkspaces.js";
+import { getWorkspaceTool } from "./tools/getWorkspace.js";
+import { getUsersTool } from "./tools/getUsers.js";
+import { getUserTool } from "./tools/getUser.js";
+import { getPermissionsTool } from "./tools/getPermissions.js";
+import { getPermissionTool } from "./tools/getPermission.js";
+import { getContractsTool } from "./tools/getContracts.js";
+import { getContractTool } from "./tools/getContract.js";
+import { getInstancesTool } from "./tools/getInstances.js";
+import { getEventsTool } from "./tools/getEvents.js";
+import { getTechnicalUsersTool } from "./tools/getTechnicalUsers.js";
 import { leanixClient } from "./leanix/client.js";
 
 async function main() {
@@ -23,61 +34,345 @@ async function main() {
     return {
       tools: [
         {
-          name: "search_messages",
-          description: "Search Slack messages optionally including thread replies.",
+          name: "get_accounts",
+          description: "List or search all accounts with pagination support.",
           inputSchema: {
             type: "object",
             properties: {
-              query: { 
+              q: { 
                 type: "string",
-                description: "The query to search for without any filters."
+                description: "A part of the name to search for"
               },
-              messageCount: { 
+              page: { 
                 type: "number",
-                description: "The maximum number of results to return.",
-                default: 20
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
               },
-              includeThreads: { 
-                type: "boolean",
-                description: "Whether to include thread replies. Set to true when doing a deep dive search.",
-                default: false
-              },
-              threadCount: { 
+              size: { 
                 type: "number",
-                description: "The maximum number of thread replies to include if includeThreads is true. Set to a higher number when doing a deep dive search with a small messageCount.",
-                default: 10
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
               },
-              sortMessages: { 
+              sort: { 
                 type: "string",
-                enum: ["mostRelevant", "latest", "oldest"],
-                description: "The sort order of the messages. Either by the most relevant results or the latest results or the oldest results.",
-                default: "mostRelevant"
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
               }
-            },
-            required: ["query"]
+            }
           }
         },
         {
-          name: "get_message_thread",
-          description: "Get the replies (thread) of a specific Slack message.",
+          name: "get_account",
+          description: "Retrieve a single account by its UUID.",
           inputSchema: {
             type: "object",
             properties: {
-              channelId: { 
+              id: { 
                 type: "string",
-                description: "The ID of the channel to get the replies for."
-              },
-              ts: { 
-                type: "string",
-                description: "The timestamp of the message to get the replies for."
-              },
-              threadCount: { 
-                type: "number",
-                description: "The maximum number of thread replies to include.",
-                default: 50
+                description: "Account UUID"
               }
             },
-            required: ["channelId", "ts"]
+            required: ["id"]
+          }
+        },
+        {
+          name: "get_workspaces",
+          description: "List all workspaces for the requesting user with filtering and pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              q: { 
+                type: "string",
+                description: "Search query"
+              },
+              feature: { 
+                type: "string",
+                description: "Feature Flag Filter"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: "id-asc"
+              },
+              labels: { 
+                type: "string",
+                description: "Comma-separated list of label ids"
+              }
+            }
+          }
+        },
+        {
+          name: "get_workspace",
+          description: "Retrieve a single workspace by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Workspace UUID"
+              }
+            },
+            required: ["id"]
+          }
+        },
+        {
+          name: "get_users",
+          description: "List or search all users with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              email: { 
+                type: "string",
+                description: "Search by email address (optional)"
+              },
+              userName: { 
+                type: "string",
+                description: "Search by userName address (optional)"
+              },
+              q: { 
+                type: "string",
+                description: "Search in user name or name (optional)"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          }
+        },
+        {
+          name: "get_user",
+          description: "Retrieve a single user by their UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "User UUID"
+              },
+              returnSinglePermission: { 
+                type: "boolean",
+                description: "If true returns only the permission for the workspace of the auth user"
+              }
+            },
+            required: ["id"]
+          }
+        },
+        {
+          name: "get_permissions",
+          description: "List user permissions with extensive filtering and pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              userId: { 
+                type: "string",
+                description: "User UUID"
+              },
+              workspaceId: { 
+                type: "string",
+                description: "Workspace UUID"
+              },
+              q: { 
+                type: "string",
+                description: "Query string to search the related user"
+              },
+              email: { 
+                type: "string",
+                description: "Email to search for, may also be a comma separated list of emails"
+              },
+              status: { 
+                type: "string",
+                description: "Optional status to search for"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 50, max 100)",
+                default: 50
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          }
+        },
+        {
+          name: "get_permission",
+          description: "Retrieve a single permission by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Permission UUID"
+              }
+            },
+            required: ["id"]
+          }
+        },
+        {
+          name: "get_contracts",
+          description: "List all contracts with search and pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              q: { 
+                type: "string",
+                description: "Search for account, type or status"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          }
+        },
+        {
+          name: "get_contract",
+          description: "Retrieve a single contract by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Contract UUID"
+              }
+            },
+            required: ["id"]
+          }
+        },
+        {
+          name: "get_instances",
+          description: "List all instances with filtering and pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              q: { 
+                type: "string",
+                description: "A part of the name or URL to search for"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              },
+              application: { 
+                type: "string",
+                description: "Comma separated list of application names"
+              },
+              url: { 
+                type: "string",
+                description: "URL"
+              }
+            }
+          }
+        },
+        {
+          name: "get_events",
+          description: "Retrieve all events for the requesting user with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              since: { 
+                type: "string",
+                description: "ISO 8601 formatted date to fetch events from"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 100, max 100)",
+                default: 100
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          }
+        },
+        {
+          name: "get_technical_users",
+          description: "List or search all technical users with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              queryUserName: { 
+                type: "string",
+                description: "Search in technical user name (optional)"
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: "userName-ASC"
+              },
+              workspaceId: { 
+                type: "string",
+                description: "The id of the workspace the technical user belong to"
+              }
+            }
           }
         }
       ]
@@ -89,12 +384,56 @@ async function main() {
     const args = (req.params.arguments as any) ?? {};
 
     try {
-      if (name === "search_messages") {
-        const result = await searchMessagesTool(leanix, args);
+      if (name === "get_accounts") {
+        const result = await getAccountsTool(leanix, args);
         return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
       }
-      if (name === "get_message_thread") {
-        const result = await getMessageThreadTool(leanix, args);
+      if (name === "get_account") {
+        const result = await getAccountTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_workspaces") {
+        const result = await getWorkspacesTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_workspace") {
+        const result = await getWorkspaceTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_users") {
+        const result = await getUsersTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_user") {
+        const result = await getUserTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_permissions") {
+        const result = await getPermissionsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_permission") {
+        const result = await getPermissionTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_contracts") {
+        const result = await getContractsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_contract") {
+        const result = await getContractTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_instances") {
+        const result = await getInstancesTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_events") {
+        const result = await getEventsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_technical_users") {
+        const result = await getTechnicalUsersTool(leanix, args);
         return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
       }
 
