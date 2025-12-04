@@ -64,7 +64,7 @@ To use this with Claude Desktop, add the following to your `claude_desktop_confi
       "command": "node",
       "args": [
         "-y",
-        "@tomgutt/leanix-mtm-mcp"
+        "leanix-mtm-mcp"
       ],
       "env": {
         "LEANIX_TOKEN": "your-api-token-here",
