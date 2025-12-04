@@ -1,6 +1,6 @@
 {
   "name": "leanix-mtm-mcp",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Integrate the LeanIX Multi-Tenant Management API into agentic workflows via MCP",
   "author": "Tom Guttermann",
   "license": "MIT",
