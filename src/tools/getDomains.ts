@@ -15,8 +15,8 @@ export async function getDomainsTool(leanix: LeanIXClient, params: GetDomainsPar
   if (params.q) queryParams.append("q", params.q);
   if (params.FQDN) queryParams.append("FQDN", params.FQDN);
   if (params.instance) queryParams.append("instance", params.instance);
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 30).toString());
   if (params.sort) queryParams.append("sort", params.sort);
 
   const endpoint = `/services/mtm/v1/domains${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;

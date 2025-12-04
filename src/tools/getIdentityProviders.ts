@@ -19,8 +19,8 @@ export async function getIdentityProvidersTool(leanix: LeanIXClient, params: Get
   if (params.accountID) queryParams.append("accountID", params.accountID);
   if (params.serviceProvider) queryParams.append("serviceProvider", params.serviceProvider);
   if (params.idmType) queryParams.append("idmType", params.idmType);
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 30).toString());
   if (params.sort) queryParams.append("sort", params.sort);
 
   const endpoint = `/services/mtm/v1/identityProviders${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;

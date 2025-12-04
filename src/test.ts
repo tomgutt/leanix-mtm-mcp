@@ -1,4 +1,5 @@
 import { leanixClient } from "./leanix/client.js";
+import { getTechnicalUsersTool } from "./tools/getTechnicalUsers.js";
 import { getUsersTool } from "./tools/getUsers.js";
 
 async function main() {
@@ -12,10 +13,16 @@ async function main() {
         const email = "tom.guttermann@leanix.net";
         console.log(`Fetching user details for: ${email}`);
         
-        const response = await getUsersTool(leanix, { email });
+        const getUsersResponse = await getUsersTool(leanix, { email });
         
         console.log("User details:");
-        console.log(JSON.stringify(response, null, 2));
+        //console.log(JSON.stringify(response, null, 2));
+
+        // Get technical users for workspace
+        const workspaceId = "32a3fd1a-cf74-4390-8143-e0b4c9807472";
+        const technicalUsersResponse = await getTechnicalUsersTool(leanix, { workspaceId });
+        console.log("Technical users:");
+        console.log(JSON.stringify(technicalUsersResponse, null, 2));
     } catch (error: any) {
         console.error("Error fetching user details:", error.message);
     }

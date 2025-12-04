@@ -14,9 +14,9 @@ export async function getWorkspacesTool(leanix: LeanIXClient, params: GetWorkspa
   
   if (params.q) queryParams.append("q", params.q);
   if (params.feature) queryParams.append("feature", params.feature);
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
-  if (params.sort) queryParams.append("sort", params.sort);
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 30).toString());
+  queryParams.append("sort", params.sort ?? "id-asc");
   if (params.labels) queryParams.append("labels", params.labels);
 
   const endpoint = `/services/mtm/v1/workspaces${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;

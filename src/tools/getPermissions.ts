@@ -19,8 +19,8 @@ export async function getPermissionsTool(leanix: LeanIXClient, params: GetPermis
   if (params.q) queryParams.append("q", params.q);
   if (params.email) queryParams.append("email", params.email);
   if (params.status) queryParams.append("status", params.status);
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 50).toString());
   if (params.sort) queryParams.append("sort", params.sort);
 
   const endpoint = `/services/mtm/v1/permissions${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;

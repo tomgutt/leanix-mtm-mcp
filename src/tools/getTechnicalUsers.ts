@@ -11,13 +11,14 @@ export type GetTechnicalUsersParams = {
 export async function getTechnicalUsersTool(leanix: LeanIXClient, params: GetTechnicalUsersParams) {
   const queryParams = new URLSearchParams();
   
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
+  // Include default values as per OpenAPI spec
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 30).toString());
   if (params.queryUserName) queryParams.append("queryUserName", params.queryUserName);
-  if (params.sort) queryParams.append("sort", params.sort);
+  queryParams.append("sort", params.sort ?? "userName-ASC");
   if (params.workspaceId) queryParams.append("workspaceId", params.workspaceId);
 
-  const endpoint = `/services/mtm/v1/technicalUsers${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+  const endpoint = `/services/mtm/v1/technicalusers${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
   const result = await leanix.get(endpoint);
 
   return result;

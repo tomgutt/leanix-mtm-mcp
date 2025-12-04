@@ -15,8 +15,8 @@ export async function getUsersTool(leanix: LeanIXClient, params: GetUsersParams)
   if (params.email) queryParams.append("email", params.email);
   if (params.userName) queryParams.append("userName", params.userName);
   if (params.q) queryParams.append("q", params.q);
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 30).toString());
   if (params.sort) queryParams.append("sort", params.sort);
 
   const endpoint = `/services/mtm/v1/users${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;

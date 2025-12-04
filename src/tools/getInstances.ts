@@ -13,8 +13,8 @@ export async function getInstancesTool(leanix: LeanIXClient, params: GetInstance
   const queryParams = new URLSearchParams();
   
   if (params.q) queryParams.append("q", params.q);
-  if (params.page) queryParams.append("page", params.page.toString());
-  if (params.size) queryParams.append("size", params.size.toString());
+  queryParams.append("page", (params.page ?? 1).toString());
+  queryParams.append("size", (params.size ?? 30).toString());
   if (params.sort) queryParams.append("sort", params.sort);
   if (params.application) queryParams.append("application", params.application);
   if (params.url) queryParams.append("url", params.url);
