@@ -13,8 +13,19 @@ import { getPermissionTool } from "./tools/getPermission.js";
 import { getContractsTool } from "./tools/getContracts.js";
 import { getContractTool } from "./tools/getContract.js";
 import { getInstancesTool } from "./tools/getInstances.js";
+import { getInstanceTool } from "./tools/getInstance.js";
 import { getEventsTool } from "./tools/getEvents.js";
+import { getEventTool } from "./tools/getEvent.js";
 import { getTechnicalUsersTool } from "./tools/getTechnicalUsers.js";
+import { getTechnicalUserTool } from "./tools/getTechnicalUser.js";
+import { getDomainsTool } from "./tools/getDomains.js";
+import { getDomainTool } from "./tools/getDomain.js";
+import { getIdentityProvidersTool } from "./tools/getIdentityProviders.js";
+import { getIdentityProviderTool } from "./tools/getIdentityProvider.js";
+import { getCustomFeaturesTool } from "./tools/getCustomFeatures.js";
+import { getCustomFeatureTool } from "./tools/getCustomFeature.js";
+import { getLabelsTool } from "./tools/getLabels.js";
+import { getLabelsByWorkspaceTool } from "./tools/getLabelsByWorkspace.js";
 import { leanixClient } from "./leanix/client.js";
 
 async function main() {
@@ -1887,6 +1898,1052 @@ async function main() {
               }
             }
           }
+        },
+        {
+          name: "get_instance",
+          description: "Retrieve a single instance by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Instance UUID"
+              }
+            },
+            required: ["id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total count (typically 1 for single instance)"
+              },
+              data: {
+                type: "object",
+                required: ["application", "name", "url"],
+                properties: {
+                  id: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Instance UUID" 
+                  },
+                  name: { 
+                    type: "string", 
+                    minLength: 2,
+                    maxLength: 64,
+                    description: "Instance name" 
+                  },
+                  url: { 
+                    type: "string", 
+                    minLength: 4,
+                    maxLength: 256,
+                    description: "Instance URL" 
+                  },
+                  identityManagement: { 
+                    type: "string", 
+                    enum: ["FULLY_EXTERNAL", "MTM_BASED_ROLES", "FULLY_MTM_BASED"],
+                    description: "Identity management type" 
+                  },
+                  isDefault: { 
+                    type: "boolean", 
+                    description: "Whether instance is default" 
+                  },
+                  isPrimary: { 
+                    type: "boolean", 
+                    description: "Whether instance is primary" 
+                  },
+                  entityId: { 
+                    type: "string", 
+                    minLength: 4,
+                    maxLength: 255,
+                    description: "Entity ID" 
+                  },
+                  application: { 
+                    type: "object", 
+                    description: "Application object" 
+                  },
+                  account: { 
+                    type: "object", 
+                    description: "Account object" 
+                  },
+                  identityProvider: { 
+                    type: "object", 
+                    description: "Identity provider object" 
+                  },
+                  type: { 
+                    type: "string", 
+                    enum: ["DEMO", "PROD"],
+                    description: "Instance type" 
+                  },
+                  prodPreferred: { 
+                    type: "boolean", 
+                    description: "Whether production is preferred" 
+                  },
+                  demoPreferred: { 
+                    type: "boolean", 
+                    description: "Whether demo is preferred" 
+                  },
+                  thirdParty: { 
+                    type: "boolean", 
+                    description: "Whether instance is third party" 
+                  },
+                  links: { 
+                    type: "array", 
+                    items: { type: "object" },
+                    description: "Related links" 
+                  }
+                },
+                description: "Instance object"
+              }
+            }
+          }
+        },
+        {
+          name: "get_event",
+          description: "Retrieve a single event by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Event UUID"
+              }
+            },
+            required: ["id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total count (typically 1 for single event)"
+              },
+              data: {
+                type: "object",
+                required: ["actor", "type"],
+                properties: {
+                  id: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Event UUID" 
+                  },
+                  type: { 
+                    type: "string", 
+                    enum: ["TEST_EVENT", "APITOKEN_CREATE", "APITOKEN_UPDATE", "APITOKEN_DELETE", "ACCOUNT_CREATE", "ACCOUNT_UPDATE", "ACCOUNT_DELETE", "CONTRACT_CREATE", "CONTRACT_UPDATE", "CONTRACT_DELETE", "WORKSPACE_CREATE", "WORKSPACE_UPDATE", "WORKSPACE_DELETE", "WORKSPACE_INITIALIZE", "TECHNICAL_USER_ARCHIVE_PERMISSION", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_WELCOME", "USER_WELCOME_SSO", "USER_LOGIN", "USER_LOGIN_FAILED", "USER_ACCESS_WORKSPACE", "USER_PERMISSION_CREATE", "USER_PERMISSION_UPDATE", "USER_ACTIVATE", "USER_INVITE", "USER_INVITE_CONFIRM", "USER_INVITE_REJECT", "USER_INVITE_APPROVE", "USER_INVITE_REMIND", "USER_PASSWORD_CREATE", "USER_PASSWORD_UPDATE", "USER_PASSWORD_RESET", "DOMAIN_UPDATE", "DOMAIN_DELETE", "WORKSPACE_STATISTICS", "INSTANCE_DELETE", "IDENTITY_PROVIDER_DELETE", "DAILY_SCIM_STATISTICS_CALCULATED", "USER_MAILJET_DELETE_FAILURE", "USER_MAILJET_DELETE_SUCCESS"],
+                    description: "Event type" 
+                  },
+                  application: { 
+                    type: "string", 
+                    description: "Application name" 
+                  },
+                  version: { 
+                    type: "string", 
+                    description: "Version" 
+                  },
+                  status: { 
+                    type: "string", 
+                    enum: ["STARTED", "FINISHED"],
+                    description: "Event status" 
+                  },
+                  createdAt: { 
+                    type: "string", 
+                    format: "date-time",
+                    description: "Creation timestamp" 
+                  },
+                  finishedAt: { 
+                    type: "string", 
+                    format: "date-time",
+                    description: "Finished timestamp" 
+                  },
+                  actor: { 
+                    type: "object", 
+                    description: "Actor user object" 
+                  },
+                  account: { 
+                    type: "object", 
+                    description: "Account object" 
+                  },
+                  user: { 
+                    type: "object", 
+                    description: "User object" 
+                  },
+                  workspace: { 
+                    type: "object", 
+                    description: "Workspace object" 
+                  },
+                  contract: { 
+                    type: "object", 
+                    description: "Contract object" 
+                  },
+                  instance: { 
+                    type: "object", 
+                    description: "Instance object" 
+                  },
+                  identityProvider: { 
+                    type: "object", 
+                    description: "Identity provider object" 
+                  },
+                  payload: { 
+                    type: "object", 
+                    additionalProperties: { type: "object" },
+                    description: "Event payload data" 
+                  },
+                  links: { 
+                    type: "array", 
+                    items: { type: "object" },
+                    description: "Related links" 
+                  }
+                },
+                description: "Event object"
+              }
+            }
+          }
+        },
+        {
+          name: "get_technical_user",
+          description: "Retrieve a single technical user by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Technical user UUID"
+              }
+            },
+            required: ["id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total count (typically 1 for single technical user)"
+              },
+              workspaceInstanceUrl: {
+                type: "string",
+                description: "Workspace instance URL"
+              },
+              workspaceName: {
+                type: "string",
+                description: "Workspace name"
+              },
+              data: {
+                type: "object",
+                required: ["permissionRole", "userName", "workspaceId"],
+                properties: {
+                  id: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Technical user UUID" 
+                  },
+                  userName: { 
+                    type: "string", 
+                    description: "Username" 
+                  },
+                  email: { 
+                    type: "string", 
+                    description: "Email address" 
+                  },
+                  permissionRole: { 
+                    type: "string", 
+                    enum: ["ADMIN", "MEMBER", "VIEWER", "CONTACT", "SYSTEM_READ", "SYSTEM_WRITE", "SYSTEM_AS_USER", "TRANSIENT"],
+                    description: "Permission role" 
+                  },
+                  customerRoles: { 
+                    type: "string", 
+                    description: "Customer roles" 
+                  },
+                  accessControlEntities: { 
+                    type: "string", 
+                    description: "Access control entities" 
+                  },
+                  apiTokenData: { 
+                    type: "object", 
+                    properties: {
+                      id: { type: "string", format: "uuid" },
+                      token: { type: "string" },
+                      description: { type: "string" },
+                      expiry: { type: "object" }
+                    },
+                    description: "API token data" 
+                  },
+                  accountId: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Account UUID" 
+                  },
+                  workspaceId: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Workspace UUID" 
+                  }
+                },
+                description: "Technical user object"
+              }
+            }
+          }
+        },
+        {
+          name: "get_domains",
+          description: "List all domains with filtering and pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              q: { 
+                type: "string",
+                description: "A part of the FQDN to search for"
+              },
+              FQDN: { 
+                type: "string",
+                description: "FQDN of the IDP (is unique over all domains)"
+              },
+              instance: { 
+                type: "string",
+                format: "uuid",
+                description: "Current workspace's instance ID"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of domains matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["fqdn", "identityProvider"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Domain UUID" 
+                    },
+                    fqdn: { 
+                      type: "string", 
+                      minLength: 3,
+                      maxLength: 255,
+                      description: "Fully qualified domain name" 
+                    },
+                    identityProvider: { 
+                      type: "object", 
+                      description: "Identity provider object" 
+                    },
+                    exclusiveIdp: { 
+                      type: "boolean", 
+                      description: "Whether domain is exclusive to IDP" 
+                    },
+                    customCertificate: { 
+                      type: "object", 
+                      description: "Custom certificate object" 
+                    }
+                  }
+                },
+                description: "Array of domain objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_domain",
+          description: "Retrieve a single domain by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Domain UUID"
+              }
+            },
+            required: ["id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total count (typically 1 for single domain)"
+              },
+              data: {
+                type: "object",
+                required: ["fqdn", "identityProvider"],
+                properties: {
+                  id: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Domain UUID" 
+                  },
+                  fqdn: { 
+                    type: "string", 
+                    minLength: 3,
+                    maxLength: 255,
+                    description: "Fully qualified domain name" 
+                  },
+                  identityProvider: { 
+                    type: "object", 
+                    description: "Identity provider object" 
+                  },
+                  exclusiveIdp: { 
+                    type: "boolean", 
+                    description: "Whether domain is exclusive to IDP" 
+                  },
+                  customCertificate: { 
+                    type: "object", 
+                    description: "Custom certificate object" 
+                  }
+                },
+                description: "Domain object"
+              }
+            }
+          }
+        },
+        {
+          name: "get_identity_providers",
+          description: "List all identity providers with filtering and pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              q: { 
+                type: "string",
+                description: "A part of the name or EntityID to search for"
+              },
+              entityID: { 
+                type: "string",
+                description: "Entity ID to search for"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of identity providers matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["identityManagement", "name", "protocol", "serviceProvider"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Identity provider UUID" 
+                    },
+                    name: { 
+                      type: "string", 
+                      minLength: 3,
+                      maxLength: 64,
+                      description: "Identity provider name" 
+                    },
+                    userNameDomain: { 
+                      type: "string", 
+                      description: "Username domain" 
+                    },
+                    account: { 
+                      type: "object", 
+                      description: "Account object" 
+                    },
+                    identityManagement: { 
+                      type: "string", 
+                      enum: ["FULLY_EXTERNAL", "MTM_BASED_ROLES", "FULLY_MTM_BASED"],
+                      description: "Identity management type" 
+                    },
+                    entityId: { 
+                      type: "string", 
+                      minLength: 4,
+                      maxLength: 255,
+                      description: "Entity ID" 
+                    },
+                    metadata: { 
+                      type: "string", 
+                      description: "Metadata" 
+                    },
+                    certificateExpiryDate: { 
+                      type: "object", 
+                      description: "Certificate expiry date" 
+                    },
+                    serviceProvider: { 
+                      type: "string", 
+                      enum: ["AUTH", "SIGNIN"],
+                      description: "Service provider type" 
+                    },
+                    protocol: { 
+                      type: "string", 
+                      enum: ["SAML", "OIDC", "IAS_OIDC"],
+                      description: "Protocol type" 
+                    },
+                    configurationUrl: { 
+                      type: "string", 
+                      description: "Configuration URL" 
+                    },
+                    excludeFromSigninUpdate: { 
+                      type: "boolean", 
+                      description: "Whether to exclude from signin update" 
+                    },
+                    boundToWorkspace: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Bound to workspace UUID" 
+                    },
+                    displayName: { 
+                      type: "string", 
+                      description: "Display name" 
+                    },
+                    description: { 
+                      type: "string", 
+                      description: "Description" 
+                    },
+                    metadataUrl: { 
+                      type: "string", 
+                      description: "Metadata URL" 
+                    }
+                  }
+                },
+                description: "Array of identity provider objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_identity_provider",
+          description: "Retrieve a single identity provider by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Identity provider UUID"
+              }
+            },
+            required: ["id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total count (typically 1 for single identity provider)"
+              },
+              data: {
+                type: "object",
+                required: ["identityManagement", "name", "protocol", "serviceProvider"],
+                properties: {
+                  id: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Identity provider UUID" 
+                  },
+                  name: { 
+                    type: "string", 
+                    minLength: 3,
+                    maxLength: 64,
+                    description: "Identity provider name" 
+                  },
+                  userNameDomain: { 
+                    type: "string", 
+                    description: "Username domain" 
+                  },
+                  account: { 
+                    type: "object", 
+                    description: "Account object" 
+                  },
+                  identityManagement: { 
+                    type: "string", 
+                    enum: ["FULLY_EXTERNAL", "MTM_BASED_ROLES", "FULLY_MTM_BASED"],
+                    description: "Identity management type" 
+                  },
+                  entityId: { 
+                    type: "string", 
+                    minLength: 4,
+                    maxLength: 255,
+                    description: "Entity ID" 
+                  },
+                  metadata: { 
+                    type: "string", 
+                    description: "Metadata" 
+                  },
+                  certificateExpiryDate: { 
+                    type: "object", 
+                    description: "Certificate expiry date" 
+                  },
+                  serviceProvider: { 
+                    type: "string", 
+                    enum: ["AUTH", "SIGNIN"],
+                    description: "Service provider type" 
+                  },
+                  protocol: { 
+                    type: "string", 
+                    enum: ["SAML", "OIDC", "IAS_OIDC"],
+                    description: "Protocol type" 
+                  },
+                  configurationUrl: { 
+                    type: "string", 
+                    description: "Configuration URL" 
+                  },
+                  excludeFromSigninUpdate: { 
+                    type: "boolean", 
+                    description: "Whether to exclude from signin update" 
+                  },
+                  boundToWorkspace: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Bound to workspace UUID" 
+                  },
+                  displayName: { 
+                    type: "string", 
+                    description: "Display name" 
+                  },
+                  description: { 
+                    type: "string", 
+                    description: "Description" 
+                  },
+                  metadataUrl: { 
+                    type: "string", 
+                    description: "Metadata URL" 
+                  }
+                },
+                description: "Identity provider object"
+              }
+            }
+          }
+        },
+        {
+          name: "get_custom_features",
+          description: "List all custom features with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 30, max 100)",
+                default: 30
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            }
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of custom features matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Custom feature UUID" 
+                    },
+                    name: { 
+                      type: "string", 
+                      description: "Custom feature name" 
+                    }
+                  }
+                },
+                description: "Array of custom feature objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_custom_feature",
+          description: "Retrieve a single custom feature by its UUID.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { 
+                type: "string",
+                description: "Custom feature UUID"
+              }
+            },
+            required: ["id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total count (typically 1 for single custom feature)"
+              },
+              data: {
+                type: "object",
+                properties: {
+                  id: { 
+                    type: "string", 
+                    format: "uuid",
+                    description: "Custom feature UUID" 
+                  },
+                  name: { 
+                    type: "string", 
+                    description: "Custom feature name" 
+                  }
+                },
+                description: "Custom feature object"
+              }
+            }
+          }
+        },
+        {
+          name: "get_labels",
+          description: "Get all labels.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              name: { 
+                type: "string",
+                description: "Label name to filter by (optional)"
+              }
+            }
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Label UUID" 
+                    },
+                    name: { 
+                      type: "string", 
+                      description: "Label name" 
+                    }
+                  }
+                },
+                description: "Array of label objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_labels_by_workspace",
+          description: "Get all currently existing labels on a workspace.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              workspaceId: { 
+                type: "string",
+                description: "Workspace UUID"
+              }
+            },
+            required: ["workspaceId"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Label UUID" 
+                    },
+                    name: { 
+                      type: "string", 
+                      description: "Label name" 
+                    }
+                  }
+                },
+                description: "Array of label objects for the workspace"
+              }
+            }
+          }
         }
       ]
     };
@@ -1947,6 +3004,50 @@ async function main() {
       }
       if (name === "get_technical_users") {
         const result = await getTechnicalUsersTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_instance") {
+        const result = await getInstanceTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_event") {
+        const result = await getEventTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_technical_user") {
+        const result = await getTechnicalUserTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_domains") {
+        const result = await getDomainsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_domain") {
+        const result = await getDomainTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_identity_providers") {
+        const result = await getIdentityProvidersTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_identity_provider") {
+        const result = await getIdentityProviderTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_custom_features") {
+        const result = await getCustomFeaturesTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_custom_feature") {
+        const result = await getCustomFeatureTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_labels") {
+        const result = await getLabelsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_labels_by_workspace") {
+        const result = await getLabelsByWorkspaceTool(leanix, args);
         return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
       }
 
