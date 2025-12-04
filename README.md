@@ -83,7 +83,7 @@ To use this with Claude Desktop, add the following to your `claude_desktop_confi
       "command": "npx",
       "args": [
         "-y",
-        "leanix-mtm-mcp"
+        "leanix-mtm-mcp@latest"
       ],
       "env": {
         "LEANIX_TOKEN": "your-api-token-here",
