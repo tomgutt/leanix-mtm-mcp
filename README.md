@@ -4,7 +4,7 @@ Integrate the LeanIX Multi-Tenant Management (MTM) API into agentic workflows vi
 
 ## Tools
 
-This MCP server provides 24 read-only tools for accessing LeanIX MTM data:
+This MCP server provides 29 read-only tools for accessing LeanIX MTM data:
 
 ### Account Management
 1. `get_accounts` - List or search all accounts with pagination
@@ -31,28 +31,33 @@ This MCP server provides 24 read-only tools for accessing LeanIX MTM data:
 12. `get_instance` - Retrieve a single instance by UUID
 
 ### Event Management
-13. `get_events` - Retrieve all events with date filtering and pagination
-14. `get_event` - Retrieve a single event by UUID
+13. `get_account_events` - Retrieve all events for a specific account with date filtering and pagination
+14. `get_workspace_events` - Retrieve all events for a specific workspace with date filtering, event type filter, and pagination
+15. `get_contract_events` - Retrieve all events for a specific contract with date filtering and pagination
+16. `get_user_events` - Retrieve all events for a specific user with date filtering and pagination
+17. `get_instance_events` - Retrieve all events for a specific instance with date filtering and pagination
+18. `get_identity_provider_events` - Retrieve all events for a specific identity provider with date filtering and pagination
+19. `get_event` - Retrieve a single event by UUID
 
 ### Technical User Management
-15. `get_technical_users` - List or search all technical users with pagination
-16. `get_technical_user` - Retrieve a single technical user by UUID
+20. `get_technical_users` - List or search all technical users with pagination
+21. `get_technical_user` - Retrieve a single technical user by UUID
 
 ### Domain Management
-17. `get_domains` - List all domains with filtering (FQDN, instance) and pagination
-18. `get_domain` - Retrieve a single domain by UUID
+22. `get_domains` - List all domains with filtering (FQDN, instance) and pagination
+23. `get_domain` - Retrieve a single domain by UUID
 
 ### Identity Provider Management
-19. `get_identity_providers` - List all identity providers with filtering and pagination
-20. `get_identity_provider` - Retrieve a single identity provider by UUID
+24. `get_identity_providers` - List all identity providers with filtering and pagination
+25. `get_identity_provider` - Retrieve a single identity provider by UUID
 
 ### Custom Feature Management
-21. `get_custom_features` - List all custom features with pagination
-22. `get_custom_feature` - Retrieve a single custom feature by UUID
+26. `get_custom_features` - List all custom features filtered by contract or workspace
+27. `get_custom_feature` - Retrieve a single custom feature by UUID
 
 ### Label Management
-23. `get_labels` - Get all labels (optionally filtered by name)
-24. `get_labels_by_workspace` - Get all labels attached to a specific workspace
+28. `get_labels` - Get all labels (optionally filtered by name)
+29. `get_labels_by_workspace` - Get all labels attached to a specific workspace
 
 ## Setup
 
