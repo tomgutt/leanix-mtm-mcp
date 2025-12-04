@@ -2161,6 +2161,11 @@ async function main() {
               id: { 
                 type: "string",
                 description: "Technical user UUID"
+              },
+              workspaceId: { 
+                type: "string",
+                format: "uuid",
+                description: "The id of the workspace the technical user belong to (only usable for a System User)"
               }
             },
             required: ["id"]
@@ -2446,7 +2451,19 @@ async function main() {
               },
               entityID: { 
                 type: "string",
-                description: "Entity ID to search for"
+                description: "EntityID of the IDP (is unique over all IdPs)"
+              },
+              accountID: { 
+                type: "string",
+                description: "AccountID of the IDP"
+              },
+              serviceProvider: { 
+                type: "string",
+                description: "Service Provider of the IDP"
+              },
+              idmType: { 
+                type: "string",
+                description: "IDM Type of the IDP (e.g., FULL, PARTIAL)"
               },
               page: { 
                 type: "number",
@@ -2707,24 +2724,19 @@ async function main() {
         },
         {
           name: "get_custom_features",
-          description: "List all custom features with pagination support.",
+          description: "Retrieve custom features filtered by contract or workspace. Restricted to LeanIX internal use only.",
           inputSchema: {
             type: "object",
             properties: {
-              page: { 
-                type: "number",
-                description: "The page number to access (1 indexed, defaults to 1)",
-                default: 1
-              },
-              size: { 
-                type: "number",
-                description: "The page size requested (defaults to 30, max 100)",
-                default: 30
-              },
-              sort: { 
+              contractId: { 
                 type: "string",
-                description: "Comma-separated list of sorting (optional)",
-                default: ""
+                format: "uuid",
+                description: "Contract UUID to filter custom features"
+              },
+              workspaceId: { 
+                type: "string",
+                format: "uuid",
+                description: "Workspace UUID to filter custom features"
               }
             }
           },
