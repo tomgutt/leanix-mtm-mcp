@@ -18,7 +18,27 @@ import { getTechnicalUsersTool } from "./tools/getTechnicalUsers.js";
 import { leanixClient } from "./leanix/client.js";
 
 async function main() {
-  const leanix = await leanixClient;
+  // Validate LeanIX connection on startup
+  let leanix;
+  try {
+    console.error("Initializing LeanIX connection...");
+    leanix = await leanixClient;
+    console.error("✓ LeanIX connection established successfully");
+    
+    // Check if user has SUPERADMIN role
+    console.error("Validating user permissions...");
+    if (!leanix.isSuperAdmin()) {
+      const decodedToken = leanix.getDecodedAccessToken();
+      const role = decodedToken?.principal?.role || 'unknown';
+      console.error(`✗ Access denied: User role '${role}' is not authorized. Only SUPERADMIN users can use this MCP server.`);
+      process.exit(1);
+    }
+    console.error("✓ User has SUPERADMIN role");
+  } catch (error: any) {
+    console.error("✗ Failed to establish LeanIX connection:", error.message);
+    console.error("Please check your LEANIX_TOKEN and LEANIX_INSTANCE environment variables.");
+    process.exit(1);
+  }
 
   const server = new Server({
     name: "leanix-mtm-mcp",

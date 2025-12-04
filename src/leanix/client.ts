@@ -171,6 +171,25 @@ export class LeanIXClient {
       throw new Error(`Failed to decode JWT token: ${error.message}`);
     }
   }
+
+  /**
+   * Check if the authenticated user has SUPERADMIN role
+   * @returns true if the user is a SUPERADMIN, false otherwise
+   * @throws Error if the token cannot be decoded or role information is missing
+   */
+  isSuperAdmin(): boolean {
+    const decodedToken = this.getDecodedAccessToken();
+    if (!decodedToken) {
+      throw new Error('No access token available');
+    }
+
+    const role = decodedToken.principal?.role;
+    if (!role) {
+      throw new Error('Role information not found in access token');
+    }
+
+    return role === 'SUPERADMIN';
+  }
 }
 
 // Check env variables and create singleton instance
