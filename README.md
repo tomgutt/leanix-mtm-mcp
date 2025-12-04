@@ -61,7 +61,7 @@ To use this with Claude Desktop, add the following to your `claude_desktop_confi
 {
   "mcpServers": {
     "leanix-mtm": {
-      "command": "node",
+      "command": "npx",
       "args": [
         "-y",
         "leanix-mtm-mcp"
