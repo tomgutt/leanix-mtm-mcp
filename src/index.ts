@@ -2852,7 +2852,7 @@ async function main() {
         },
         {
           name: "get_labels",
-          description: "Get all labels.",
+          description: "Get all labels. Returns a response object with status, data array containing label objects (each with id and name properties), and optional error information.",
           inputSchema: {
             type: "object",
             properties: {
@@ -2861,55 +2861,11 @@ async function main() {
                 description: "Label name to filter by (optional)"
               }
             }
-          },
-          outputSchema: {
-            type: "object",
-            properties: {
-              status: {
-                type: "string",
-                enum: ["OK", "ERROR"],
-                description: "Response status"
-              },
-              type: {
-                type: "string",
-                description: "Response type"
-              },
-              message: {
-                type: "string",
-                description: "Response message"
-              },
-              errors: {
-                type: "array",
-                items: {
-                  type: "object",
-                  description: "API error details"
-                },
-                description: "Array of errors if status is ERROR"
-              },
-              data: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    id: { 
-                      type: "string", 
-                      format: "uuid",
-                      description: "Label UUID" 
-                    },
-                    name: { 
-                      type: "string", 
-                      description: "Label name" 
-                    }
-                  }
-                },
-                description: "Array of label objects"
-              }
-            }
           }
         },
         {
           name: "get_labels_by_workspace",
-          description: "Get all currently existing labels on a workspace.",
+          description: "Get all currently existing labels on a workspace. Returns an array of label objects with id and name properties.",
           inputSchema: {
             type: "object",
             properties: {
@@ -2919,50 +2875,6 @@ async function main() {
               }
             },
             required: ["workspaceId"]
-          },
-          outputSchema: {
-            type: "object",
-            properties: {
-              status: {
-                type: "string",
-                enum: ["OK", "ERROR"],
-                description: "Response status"
-              },
-              type: {
-                type: "string",
-                description: "Response type"
-              },
-              message: {
-                type: "string",
-                description: "Response message"
-              },
-              errors: {
-                type: "array",
-                items: {
-                  type: "object",
-                  description: "API error details"
-                },
-                description: "Array of errors if status is ERROR"
-              },
-              data: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    id: { 
-                      type: "string", 
-                      format: "uuid",
-                      description: "Label UUID" 
-                    },
-                    name: { 
-                      type: "string", 
-                      description: "Label name" 
-                    }
-                  }
-                },
-                description: "Array of label objects for the workspace"
-              }
-            }
           }
         }
       ]
