@@ -2,6 +2,9 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { getAccountsTool } from "./tools/getAccounts.js";
 import { getAccountTool } from "./tools/getAccount.js";
 import { getWorkspacesTool } from "./tools/getWorkspaces.js";
@@ -28,6 +31,11 @@ import { getLabelsTool } from "./tools/getLabels.js";
 import { getLabelsByWorkspaceTool } from "./tools/getLabelsByWorkspace.js";
 import { leanixClient } from "./leanix/client.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(join(__dirname, "../package.json"), "utf-8"));
+const version = packageJson.version;
+
 async function main() {
   // Validate LeanIX connection on startup
   let leanix;
@@ -53,7 +61,7 @@ async function main() {
 
   const server = new Server({
     name: "leanix-mtm-mcp",
-    version: "0.1.0"
+    version: version
   }, {
     capabilities: {
       tools: {}
@@ -786,7 +794,7 @@ async function main() {
                     permissions: { 
                       type: "array", 
                       items: { type: "object" },
-                      description: "Array of permission objects" 
+                      description: "Array of workspace access permission objects" 
                     },
                     replayed: { 
                       type: "boolean", 
@@ -983,7 +991,7 @@ async function main() {
         },
         {
           name: "get_permissions",
-          description: "List user permissions with extensive filtering and pagination support.",
+          description: "List user workspace access permissions with extensive filtering and pagination support.",
           inputSchema: {
             type: "object",
             properties: {
@@ -1051,7 +1059,7 @@ async function main() {
               total: {
                 type: "number",
                 format: "int64",
-                description: "Total number of permissions matching the query"
+                description: "Total number of workspace access permissions matching the query"
               },
               data: {
                 type: "array",
@@ -1062,7 +1070,7 @@ async function main() {
                     id: { 
                       type: "string", 
                       format: "uuid",
-                      description: "Permission UUID" 
+                      description: "Workspace access permission UUID" 
                     },
                     workspaceId: { 
                       type: "string", 
@@ -1072,7 +1080,7 @@ async function main() {
                     role: { 
                       type: "string", 
                       enum: ["ADMIN", "MEMBER", "VIEWER", "CONTACT", "SYSTEM_READ", "SYSTEM_WRITE", "SYSTEM_AS_USER", "TRANSIENT"],
-                      description: "Permission role" 
+                      description: "Workspace access role" 
                     },
                     status: { 
                       type: "string", 
@@ -1081,11 +1089,11 @@ async function main() {
                     },
                     user: { 
                       type: "object", 
-                      description: "User object associated with this permission" 
+                      description: "User object associated with this workspace access permission" 
                     },
                     workspace: { 
                       type: "object", 
-                      description: "Workspace object associated with this permission" 
+                      description: "Workspace object associated with this access permission" 
                     },
                     lastLogin: { 
                       type: "string", 
@@ -1094,11 +1102,11 @@ async function main() {
                     },
                     invitedByUser: { 
                       type: "object", 
-                      description: "User who invited this permission" 
+                      description: "User who invited this workspace access permission" 
                     },
                     reviewedByUser: { 
                       type: "object", 
-                      description: "User who reviewed this permission" 
+                      description: "User who reviewed this workspace access permission" 
                     },
                     customerRoles: { 
                       type: "string", 
@@ -1119,11 +1127,11 @@ async function main() {
                     },
                     replayed: { 
                       type: "boolean", 
-                      description: "Whether permission was replayed" 
+                      description: "Whether workspace access permission was replayed" 
                     },
                     active: { 
                       type: "boolean", 
-                      description: "Whether permission is active" 
+                      description: "Whether workspace access permission is active" 
                     },
                     links: { 
                       type: "array", 
@@ -1132,20 +1140,20 @@ async function main() {
                     }
                   }
                 },
-                description: "Array of permission objects"
+                description: "Array of workspace access permission objects"
               }
             }
           }
         },
         {
           name: "get_permission",
-          description: "Retrieve a single permission by its UUID.",
+          description: "Retrieve a single workspace access permission by its UUID.",
           inputSchema: {
             type: "object",
             properties: {
               id: { 
                 type: "string",
-                description: "Permission UUID"
+                description: "Workspace access permission UUID"
               }
             },
             required: ["id"]
@@ -1177,7 +1185,7 @@ async function main() {
               total: {
                 type: "number",
                 format: "int64",
-                description: "Total count (typically 1 for single permission)"
+                description: "Total count (typically 1 for single workspace access permission)"
               },
               data: {
                 type: "object",
@@ -1186,7 +1194,7 @@ async function main() {
                   id: { 
                     type: "string", 
                     format: "uuid",
-                    description: "Permission UUID" 
+                    description: "Workspace access permission UUID" 
                   },
                   workspaceId: { 
                     type: "string", 
@@ -1196,7 +1204,7 @@ async function main() {
                   role: { 
                     type: "string", 
                     enum: ["ADMIN", "MEMBER", "VIEWER", "CONTACT", "SYSTEM_READ", "SYSTEM_WRITE", "SYSTEM_AS_USER", "TRANSIENT"],
-                    description: "Permission role" 
+                    description: "Workspace access role" 
                   },
                   status: { 
                     type: "string", 
@@ -1205,11 +1213,11 @@ async function main() {
                   },
                   user: { 
                     type: "object", 
-                    description: "User object associated with this permission" 
+                    description: "User object associated with this workspace access permission" 
                   },
                   workspace: { 
                     type: "object", 
-                    description: "Workspace object associated with this permission" 
+                    description: "Workspace object associated with this access permission" 
                   },
                   lastLogin: { 
                     type: "string", 
@@ -1218,11 +1226,11 @@ async function main() {
                   },
                   invitedByUser: { 
                     type: "object", 
-                    description: "User who invited this permission" 
+                    description: "User who invited this workspace access permission" 
                   },
                   reviewedByUser: { 
                     type: "object", 
-                    description: "User who reviewed this permission" 
+                    description: "User who reviewed this workspace access permission" 
                   },
                   customerRoles: { 
                     type: "string", 
@@ -1243,11 +1251,11 @@ async function main() {
                   },
                   replayed: { 
                     type: "boolean", 
-                    description: "Whether permission was replayed" 
+                    description: "Whether workspace access permission was replayed" 
                   },
                   active: { 
                     type: "boolean", 
-                    description: "Whether permission is active" 
+                    description: "Whether workspace access permission is active" 
                   },
                   links: { 
                     type: "array", 
@@ -1255,7 +1263,7 @@ async function main() {
                     description: "Related links" 
                   }
                 },
-                description: "Permission object"
+                description: "Workspace access permission object"
               }
             }
           }
