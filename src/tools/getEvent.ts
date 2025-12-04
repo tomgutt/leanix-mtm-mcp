@@ -1,14 +1,14 @@
 import type { LeanIXClient } from "../leanix/client.js";
 
 export type GetEventParams = {
-  id: string;
+  event_id: string;
 };
 
 export async function getEventTool(leanix: LeanIXClient, params: GetEventParams) {
-  const { id } = params;
-  if (!id) throw new Error("id is required");
+  const { event_id } = params;
+  if (!event_id) throw new Error("event_id is required");
 
-  const result = await leanix.get(`/services/mtm/v1/events/${id}`);
+  const result = await leanix.get(`/services/mtm/v1/events/${event_id}`);
   return result;
 }
 

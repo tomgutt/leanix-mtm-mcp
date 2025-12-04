@@ -1,13 +1,13 @@
 import type { LeanIXClient } from "../leanix/client.js";
 
 export type GetContractParams = {
-  id: string;
+  contract_id: string;
 };
 
 export async function getContractTool(leanix: LeanIXClient, params: GetContractParams) {
-  const { id } = params;
-  if (!id) throw new Error("id is required");
+  const { contract_id } = params;
+  if (!contract_id) throw new Error("contract_id is required");
 
-  const result = await leanix.get(`/services/mtm/v1/contracts/${id}`);
+  const result = await leanix.get(`/services/mtm/v1/contracts/${contract_id}`);
   return result;
 }

@@ -1,14 +1,14 @@
 import type { LeanIXClient } from "../leanix/client.js";
 
 export type GetCustomFeatureParams = {
-  id: string;
+  custom_feature_id: string;
 };
 
 export async function getCustomFeatureTool(leanix: LeanIXClient, params: GetCustomFeatureParams) {
-  const { id } = params;
-  if (!id) throw new Error("id is required");
+  const { custom_feature_id } = params;
+  if (!custom_feature_id) throw new Error("custom_feature_id is required");
 
-  const result = await leanix.get(`/services/mtm/v1/customFeatures/${id}`);
+  const result = await leanix.get(`/services/mtm/v1/customFeatures/${custom_feature_id}`);
   return result;
 }
 

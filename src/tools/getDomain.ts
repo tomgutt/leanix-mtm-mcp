@@ -1,14 +1,14 @@
 import type { LeanIXClient } from "../leanix/client.js";
 
 export type GetDomainParams = {
-  id: string;
+  domain_id: string;
 };
 
 export async function getDomainTool(leanix: LeanIXClient, params: GetDomainParams) {
-  const { id } = params;
-  if (!id) throw new Error("id is required");
+  const { domain_id } = params;
+  if (!domain_id) throw new Error("domain_id is required");
 
-  const result = await leanix.get(`/services/mtm/v1/domains/${id}`);
+  const result = await leanix.get(`/services/mtm/v1/domains/${domain_id}`);
   return result;
 }
 

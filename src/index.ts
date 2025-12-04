@@ -193,12 +193,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              account_id: { 
                 type: "string",
                 description: "Account UUID"
               }
             },
-            required: ["id"]
+            required: ["account_id"]
           },
           outputSchema: {
             type: "object",
@@ -476,12 +476,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              workspace_id: { 
                 type: "string",
                 description: "Workspace UUID"
               }
             },
-            required: ["id"]
+            required: ["workspace_id"]
           },
           outputSchema: {
             type: "object",
@@ -826,7 +826,7 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              user_id: { 
                 type: "string",
                 description: "User UUID"
               },
@@ -835,7 +835,7 @@ async function main() {
                 description: "If true returns only the permission for the workspace of the auth user"
               }
             },
-            required: ["id"]
+            required: ["user_id"]
           },
           outputSchema: {
             type: "object",
@@ -1151,12 +1151,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              permission_id: { 
                 type: "string",
                 description: "Workspace access permission UUID"
               }
             },
-            required: ["id"]
+            required: ["permission_id"]
           },
           outputSchema: {
             type: "object",
@@ -1399,12 +1399,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              contract_id: { 
                 type: "string",
                 description: "Contract UUID"
               }
             },
-            required: ["id"]
+            required: ["contract_id"]
           },
           outputSchema: {
             type: "object",
@@ -1913,12 +1913,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              instance_id: { 
                 type: "string",
                 description: "Instance UUID"
               }
             },
-            required: ["id"]
+            required: ["instance_id"]
           },
           outputSchema: {
             type: "object",
@@ -2035,12 +2035,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              event_id: { 
                 type: "string",
                 description: "Event UUID"
               }
             },
-            required: ["id"]
+            required: ["event_id"]
           },
           outputSchema: {
             type: "object",
@@ -2158,7 +2158,7 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              technical_user_id: { 
                 type: "string",
                 description: "Technical user UUID"
               },
@@ -2168,7 +2168,7 @@ async function main() {
                 description: "The id of the workspace the technical user belong to (only usable for a System User)"
               }
             },
-            required: ["id"]
+            required: ["technical_user_id"]
           },
           outputSchema: {
             type: "object",
@@ -2370,12 +2370,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              domain_id: { 
                 type: "string",
                 description: "Domain UUID"
               }
             },
-            required: ["id"]
+            required: ["domain_id"]
           },
           outputSchema: {
             type: "object",
@@ -2603,12 +2603,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              identity_provider_id: { 
                 type: "string",
                 description: "Identity provider UUID"
               }
             },
-            required: ["id"]
+            required: ["identity_provider_id"]
           },
           outputSchema: {
             type: "object",
@@ -2796,12 +2796,12 @@ async function main() {
           inputSchema: {
             type: "object",
             properties: {
-              id: { 
+              custom_feature_id: { 
                 type: "string",
                 description: "Custom feature UUID"
               }
             },
-            required: ["id"]
+            required: ["custom_feature_id"]
           },
           outputSchema: {
             type: "object",
