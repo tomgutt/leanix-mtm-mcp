@@ -14,7 +14,7 @@ export class LeanIXClient {
     
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
-      timeout: 30000,
+      timeout: 60000,
     });
   }
 
