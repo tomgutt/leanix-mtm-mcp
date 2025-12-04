@@ -1,20 +1,22 @@
 {
-  "name": "slack-mcp",
-  "version": "1.0.3",
-  "description": "Integrate the Slack Web API into agentic workflows via MCP",
+  "name": "leanix-mtm-mcp",
+  "version": "0.1.0",
+  "description": "Integrate the LeanIX Multi-Tenant Management API into agentic workflows via MCP",
   "author": "Tom Guttermann",
   "license": "MIT",
   "publisher": "tomgutt",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tomgutt/slack-mcp.git"
+    "url": "https://github.com/tomgutt/leanix-mtm-mcp.git"
   },
   "keywords": [
     "mcp",
     "agent",
     "autonomous",
     "ai",
-    "slack"
+    "leanix",
+    "mtm",
+    "multi-tenant-management"
   ],
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",

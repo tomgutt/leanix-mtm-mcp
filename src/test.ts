@@ -1,4 +1,5 @@
 import { leanixClient } from "./leanix/client.js";
+import { getUsersTool } from "./tools/getUsers.js";
 
 async function main() {
     // get leanix client
@@ -11,7 +12,7 @@ async function main() {
         const email = "tom.guttermann@leanix.net";
         console.log(`Fetching user details for: ${email}`);
         
-        const response = await leanix.get(`/services/mtm/v1/users?email=${encodeURIComponent(email)}`);
+        const response = await getUsersTool(leanix, { email });
         
         console.log("User details:");
         console.log(JSON.stringify(response, null, 2));

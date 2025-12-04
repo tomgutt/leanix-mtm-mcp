@@ -1,45 +1,57 @@
-## Slack MCP Server
+## LeanIX MTM MCP Server
 
-Integrate the Slack Web API into agentic workflows via MCP.
+Integrate the LeanIX Multi-Tenant Management (MTM) API into agentic workflows via MCP.
 
 ## Tools
 
-1. `search_messages`
-2. `get_message_thread`
+This MCP server provides 13 read-only tools for accessing LeanIX MTM data:
+
+### Account Management
+1. `get_accounts` - List or search all accounts with pagination
+2. `get_account` - Retrieve a single account by UUID
+
+### Workspace Management
+3. `get_workspaces` - List workspaces with filtering (features, labels) and pagination
+4. `get_workspace` - Retrieve a single workspace by UUID
+
+### User Management
+5. `get_users` - List or search all users with pagination
+6. `get_user` - Retrieve a single user by UUID
+
+### Permission Management
+7. `get_permissions` - List user permissions with extensive filtering and pagination
+8. `get_permission` - Retrieve a single permission by UUID
+
+### Contract Management
+9. `get_contracts` - List all contracts with search and pagination
+10. `get_contract` - Retrieve a single contract by UUID
+
+### Instance Management
+11. `get_instances` - List all instances with filtering and pagination
+
+### Event Management
+12. `get_events` - Retrieve all events with date filtering and pagination
+
+### Technical User Management
+13. `get_technical_users` - List or search all technical users with pagination
 
 ## Setup
 
-### Access Token
+### API Token
 
-Create a Slack app and obtain a User OAuth Token (starts with `xoxp-`). Ensure the authorized user is a member of the channels you want to search.
+Create a LeanIX API token for authentication.
 
 Required environment variables (can be set in your shell or a `.env` file):
 
-- `SLACK_AUTH_USER_TOKEN` (starts with `xoxp-`)
-- `SLACK_SEARCH_CHANNELS` (comma-separated channel names without '#' with no leading or trailing spaces)
+- `LEANIX_TOKEN` - Your LeanIX API token
+- `LEANIX_INSTANCE` - Your LeanIX instance (e.g., 'app', 'demo-eu-1', defaults to 'app')
 
 Example `.env`:
 
 ```ini
-SLACK_AUTH_USER_TOKEN=xoxp-...
-SLACK_SEARCH_CHANNELS=general,random
+LEANIX_TOKEN=your-api-token-here
+LEANIX_INSTANCE=app
 ```
-
-### Slack Scopes
-
-Grant the following user token scopes to your Slack app (choose public and/or private based on your needs):
-
-- `search:read`
-- `channels:history` (public) and/or `groups:history` (private) (read messages and other content in a user’s public channels)
-- `channels:read` / `groups:read` (view basic information about public channels in a workspace)
-- `channels:history` (read messages and other content in a user’s public channels)
-- `links:read` (view URLs in messages)
-- `search:read` (search a workspace’s content)
-- `search:read.private` (search a workspace's content in private channels)
-- `search:read.public` (search a workspace's content in public channels)
-- `search:read.users` (search a workspace's users)
-- `users.profile:read` (view a user’s profile information)
-
 
 ## Usage with Claude Desktop
 
@@ -48,24 +60,20 @@ To use this with Claude Desktop, add the following to your `claude_desktop_confi
 ```json
 {
   "mcpServers": {
-    "slack": {
-      "command": "npx",
+    "leanix-mtm": {
+      "command": "node",
       "args": [
         "-y",
-        "@tomgutt/slack-mcp"
+        "@tomgutt/leanix-mtm-mcp"
       ],
       "env": {
-        "SLACK_AUTH_USER_TOKEN": "xoxp-...",
-        "SLACK_SEARCH_CHANNELS": "general,random"
+        "LEANIX_TOKEN": "your-api-token-here",
+        "LEANIX_INSTANCE": "eu-8"
       }
     }
   }
 }
 ```
-
-## NPX
-
-If published, you can run it directly via NPX (example shown in the Claude configuration above).
 
 ## Run locally
 
@@ -81,24 +89,14 @@ Use the mcp inspector:
 npm run inspector
 ```
 
-## Test a tool without inspector
+## Features
 
-```bash
-./run-test.sh
-```
-
-## Tool Inputs
-
-- `search_messages`: `{ query: string, messageCount?: number, includeThreads?: boolean, threadCount?: number, sortMessages?: "mostRelevant" | "latest" | "oldest" }`
-- `get_message_thread`: `{ channelId: string, ts: string, threadCount?: number }`
-
-All tools restrict results to `SLACK_SEARCH_CHANNELS`. `sortMessages` is only used for `search_messages`.
-
-## Changes to original
-
-- Implements Slack message search with optional thread inclusion and paging
-- Adds lightweight response shaping to reduce token usage
-- Provides a channel allow-list via `SLACK_SEARCH_CHANNELS`
+- ✅ Read-only operations (no data modifications)
+- ✅ Comprehensive pagination support
+- ✅ Extensive filtering options
+- ✅ OAuth 2.0 authentication with automatic token refresh
+- ✅ Proper error handling
+- ✅ TypeScript support
 
 ## License
 

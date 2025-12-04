@@ -13,12 +13,8 @@ if [ -f "$ROOT_DIR/.env" ]; then
 fi
 
 # Basic validation for required environment variables
-if [ -z "${SLACK_AUTH_USER_TOKEN:-}" ]; then
-  echo "Error: SLACK_AUTH_USER_TOKEN is not set (set it in .env or your shell)." >&2
-  exit 1
-fi
-if [ -z "${SLACK_SEARCH_CHANNELS:-}" ]; then
-  echo "Error: SLACK_SEARCH_CHANNELS is not set (set it in .env or your shell)." >&2
+if [ -z "${LEANIX_TOKEN:-}" ]; then
+  echo "Error: LEANIX_TOKEN is not set (set it in .env or your shell)." >&2
   exit 1
 fi
 
@@ -32,5 +28,3 @@ if [ ! -f "$ROOT_DIR/build/test.js" ]; then
 fi
 
 exec node "$ROOT_DIR/build/test.js" "$@"
-
-
