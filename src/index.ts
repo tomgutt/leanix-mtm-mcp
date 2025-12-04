@@ -17,8 +17,13 @@ import { getContractsTool } from "./tools/getContracts.js";
 import { getContractTool } from "./tools/getContract.js";
 import { getInstancesTool } from "./tools/getInstances.js";
 import { getInstanceTool } from "./tools/getInstance.js";
-import { getEventsTool } from "./tools/getEvents.js";
 import { getEventTool } from "./tools/getEvent.js";
+import { getAccountEventsTool } from "./tools/getAccountEvents.js";
+import { getWorkspaceEventsTool } from "./tools/getWorkspaceEvents.js";
+import { getContractEventsTool } from "./tools/getContractEvents.js";
+import { getUserEventsTool } from "./tools/getUserEvents.js";
+import { getInstanceEventsTool } from "./tools/getInstanceEvents.js";
+import { getIdentityProviderEventsTool } from "./tools/getIdentityProviderEvents.js";
 import { getTechnicalUsersTool } from "./tools/getTechnicalUsers.js";
 import { getTechnicalUserTool } from "./tools/getTechnicalUser.js";
 import { getDomainsTool } from "./tools/getDomains.js";
@@ -1649,14 +1654,18 @@ async function main() {
           }
         },
         {
-          name: "get_events",
-          description: "Retrieve all events for the requesting user with pagination support.",
+          name: "get_account_events",
+          description: "Retrieve all events for a specific account with pagination support.",
           inputSchema: {
             type: "object",
             properties: {
+              account_id: { 
+                type: "string",
+                description: "Account UUID"
+              },
               since: { 
                 type: "string",
-                description: "ISO 8601 formatted date to fetch events from"
+                description: "The date offset to fetch events from (ISO 8601 formatted)"
               },
               page: { 
                 type: "number",
@@ -1673,7 +1682,737 @@ async function main() {
                 description: "Comma-separated list of sorting (optional)",
                 default: ""
               }
+            },
+            required: ["account_id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of events matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["actor", "type"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Event UUID" 
+                    },
+                    type: { 
+                      type: "string", 
+                      enum: ["TEST_EVENT", "APITOKEN_CREATE", "APITOKEN_UPDATE", "APITOKEN_DELETE", "ACCOUNT_CREATE", "ACCOUNT_UPDATE", "ACCOUNT_DELETE", "CONTRACT_CREATE", "CONTRACT_UPDATE", "CONTRACT_DELETE", "WORKSPACE_CREATE", "WORKSPACE_UPDATE", "WORKSPACE_DELETE", "WORKSPACE_INITIALIZE", "TECHNICAL_USER_ARCHIVE_PERMISSION", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_WELCOME", "USER_WELCOME_SSO", "USER_LOGIN", "USER_LOGIN_FAILED", "USER_ACCESS_WORKSPACE", "USER_PERMISSION_CREATE", "USER_PERMISSION_UPDATE", "USER_ACTIVATE", "USER_INVITE", "USER_INVITE_CONFIRM", "USER_INVITE_REJECT", "USER_INVITE_APPROVE", "USER_INVITE_REMIND", "USER_PASSWORD_CREATE", "USER_PASSWORD_UPDATE", "USER_PASSWORD_RESET", "DOMAIN_UPDATE", "DOMAIN_DELETE", "WORKSPACE_STATISTICS", "INSTANCE_DELETE", "IDENTITY_PROVIDER_DELETE", "DAILY_SCIM_STATISTICS_CALCULATED", "USER_MAILJET_DELETE_FAILURE", "USER_MAILJET_DELETE_SUCCESS"],
+                      description: "Event type" 
+                    },
+                    application: { 
+                      type: "string", 
+                      description: "Application name" 
+                    },
+                    version: { 
+                      type: "string", 
+                      description: "Version" 
+                    },
+                    status: { 
+                      type: "string", 
+                      enum: ["STARTED", "FINISHED"],
+                      description: "Event status" 
+                    },
+                    createdAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Creation timestamp" 
+                    },
+                    finishedAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Finished timestamp" 
+                    },
+                    actor: { 
+                      type: "object", 
+                      description: "Actor user object" 
+                    },
+                    account: { 
+                      type: "object", 
+                      description: "Account object" 
+                    },
+                    user: { 
+                      type: "object", 
+                      description: "User object" 
+                    },
+                    workspace: { 
+                      type: "object", 
+                      description: "Workspace object" 
+                    },
+                    contract: { 
+                      type: "object", 
+                      description: "Contract object" 
+                    },
+                    instance: { 
+                      type: "object", 
+                      description: "Instance object" 
+                    },
+                    identityProvider: { 
+                      type: "object", 
+                      description: "Identity provider object" 
+                    },
+                    payload: { 
+                      type: "object", 
+                      additionalProperties: { type: "object" },
+                      description: "Event payload data" 
+                    },
+                    links: { 
+                      type: "array", 
+                      items: { type: "object" },
+                      description: "Related links" 
+                    }
+                  }
+                },
+                description: "Array of event objects"
+              }
             }
+          }
+        },
+        {
+          name: "get_workspace_events",
+          description: "Retrieve all events for a specific workspace with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              workspace_id: { 
+                type: "string",
+                description: "Workspace UUID"
+              },
+              since: { 
+                type: "string",
+                description: "The date offset to fetch events from (ISO 8601 formatted)"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 100, max 100)",
+                default: 100
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              },
+              eventType: { 
+                type: "string",
+                description: "Event type filter (optional)"
+              }
+            },
+            required: ["workspace_id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of events matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["actor", "type"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Event UUID" 
+                    },
+                    type: { 
+                      type: "string", 
+                      enum: ["TEST_EVENT", "APITOKEN_CREATE", "APITOKEN_UPDATE", "APITOKEN_DELETE", "ACCOUNT_CREATE", "ACCOUNT_UPDATE", "ACCOUNT_DELETE", "CONTRACT_CREATE", "CONTRACT_UPDATE", "CONTRACT_DELETE", "WORKSPACE_CREATE", "WORKSPACE_UPDATE", "WORKSPACE_DELETE", "WORKSPACE_INITIALIZE", "TECHNICAL_USER_ARCHIVE_PERMISSION", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_WELCOME", "USER_WELCOME_SSO", "USER_LOGIN", "USER_LOGIN_FAILED", "USER_ACCESS_WORKSPACE", "USER_PERMISSION_CREATE", "USER_PERMISSION_UPDATE", "USER_ACTIVATE", "USER_INVITE", "USER_INVITE_CONFIRM", "USER_INVITE_REJECT", "USER_INVITE_APPROVE", "USER_INVITE_REMIND", "USER_PASSWORD_CREATE", "USER_PASSWORD_UPDATE", "USER_PASSWORD_RESET", "DOMAIN_UPDATE", "DOMAIN_DELETE", "WORKSPACE_STATISTICS", "INSTANCE_DELETE", "IDENTITY_PROVIDER_DELETE", "DAILY_SCIM_STATISTICS_CALCULATED", "USER_MAILJET_DELETE_FAILURE", "USER_MAILJET_DELETE_SUCCESS"],
+                      description: "Event type" 
+                    },
+                    application: { 
+                      type: "string", 
+                      description: "Application name" 
+                    },
+                    version: { 
+                      type: "string", 
+                      description: "Version" 
+                    },
+                    status: { 
+                      type: "string", 
+                      enum: ["STARTED", "FINISHED"],
+                      description: "Event status" 
+                    },
+                    createdAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Creation timestamp" 
+                    },
+                    finishedAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Finished timestamp" 
+                    },
+                    actor: { 
+                      type: "object", 
+                      description: "Actor user object" 
+                    },
+                    account: { 
+                      type: "object", 
+                      description: "Account object" 
+                    },
+                    user: { 
+                      type: "object", 
+                      description: "User object" 
+                    },
+                    workspace: { 
+                      type: "object", 
+                      description: "Workspace object" 
+                    },
+                    contract: { 
+                      type: "object", 
+                      description: "Contract object" 
+                    },
+                    instance: { 
+                      type: "object", 
+                      description: "Instance object" 
+                    },
+                    identityProvider: { 
+                      type: "object", 
+                      description: "Identity provider object" 
+                    },
+                    payload: { 
+                      type: "object", 
+                      additionalProperties: { type: "object" },
+                      description: "Event payload data" 
+                    },
+                    links: { 
+                      type: "array", 
+                      items: { type: "object" },
+                      description: "Related links" 
+                    }
+                  }
+                },
+                description: "Array of event objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_contract_events",
+          description: "Retrieve all events for a specific contract with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              contract_id: { 
+                type: "string",
+                description: "Contract UUID"
+              },
+              since: { 
+                type: "string",
+                description: "Time limit, list only newer events (ISO 8601 formatted date)"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 100, max 100)",
+                default: 100
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            },
+            required: ["contract_id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of events matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["actor", "type"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Event UUID" 
+                    },
+                    type: { 
+                      type: "string", 
+                      enum: ["TEST_EVENT", "APITOKEN_CREATE", "APITOKEN_UPDATE", "APITOKEN_DELETE", "ACCOUNT_CREATE", "ACCOUNT_UPDATE", "ACCOUNT_DELETE", "CONTRACT_CREATE", "CONTRACT_UPDATE", "CONTRACT_DELETE", "WORKSPACE_CREATE", "WORKSPACE_UPDATE", "WORKSPACE_DELETE", "WORKSPACE_INITIALIZE", "TECHNICAL_USER_ARCHIVE_PERMISSION", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_WELCOME", "USER_WELCOME_SSO", "USER_LOGIN", "USER_LOGIN_FAILED", "USER_ACCESS_WORKSPACE", "USER_PERMISSION_CREATE", "USER_PERMISSION_UPDATE", "USER_ACTIVATE", "USER_INVITE", "USER_INVITE_CONFIRM", "USER_INVITE_REJECT", "USER_INVITE_APPROVE", "USER_INVITE_REMIND", "USER_PASSWORD_CREATE", "USER_PASSWORD_UPDATE", "USER_PASSWORD_RESET", "DOMAIN_UPDATE", "DOMAIN_DELETE", "WORKSPACE_STATISTICS", "INSTANCE_DELETE", "IDENTITY_PROVIDER_DELETE", "DAILY_SCIM_STATISTICS_CALCULATED", "USER_MAILJET_DELETE_FAILURE", "USER_MAILJET_DELETE_SUCCESS"],
+                      description: "Event type" 
+                    },
+                    application: { 
+                      type: "string", 
+                      description: "Application name" 
+                    },
+                    version: { 
+                      type: "string", 
+                      description: "Version" 
+                    },
+                    status: { 
+                      type: "string", 
+                      enum: ["STARTED", "FINISHED"],
+                      description: "Event status" 
+                    },
+                    createdAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Creation timestamp" 
+                    },
+                    finishedAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Finished timestamp" 
+                    },
+                    actor: { 
+                      type: "object", 
+                      description: "Actor user object" 
+                    },
+                    account: { 
+                      type: "object", 
+                      description: "Account object" 
+                    },
+                    user: { 
+                      type: "object", 
+                      description: "User object" 
+                    },
+                    workspace: { 
+                      type: "object", 
+                      description: "Workspace object" 
+                    },
+                    contract: { 
+                      type: "object", 
+                      description: "Contract object" 
+                    },
+                    instance: { 
+                      type: "object", 
+                      description: "Instance object" 
+                    },
+                    identityProvider: { 
+                      type: "object", 
+                      description: "Identity provider object" 
+                    },
+                    payload: { 
+                      type: "object", 
+                      additionalProperties: { type: "object" },
+                      description: "Event payload data" 
+                    },
+                    links: { 
+                      type: "array", 
+                      items: { type: "object" },
+                      description: "Related links" 
+                    }
+                  }
+                },
+                description: "Array of event objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_user_events",
+          description: "Retrieve all events for a specific user with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              user_id: { 
+                type: "string",
+                description: "User UUID"
+              },
+              since: { 
+                type: "string",
+                description: "The date offset to fetch events from (ISO 8601 formatted)"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 100, max 100)",
+                default: 100
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            },
+            required: ["user_id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of events matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["actor", "type"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Event UUID" 
+                    },
+                    type: { 
+                      type: "string", 
+                      enum: ["TEST_EVENT", "APITOKEN_CREATE", "APITOKEN_UPDATE", "APITOKEN_DELETE", "ACCOUNT_CREATE", "ACCOUNT_UPDATE", "ACCOUNT_DELETE", "CONTRACT_CREATE", "CONTRACT_UPDATE", "CONTRACT_DELETE", "WORKSPACE_CREATE", "WORKSPACE_UPDATE", "WORKSPACE_DELETE", "WORKSPACE_INITIALIZE", "TECHNICAL_USER_ARCHIVE_PERMISSION", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_WELCOME", "USER_WELCOME_SSO", "USER_LOGIN", "USER_LOGIN_FAILED", "USER_ACCESS_WORKSPACE", "USER_PERMISSION_CREATE", "USER_PERMISSION_UPDATE", "USER_ACTIVATE", "USER_INVITE", "USER_INVITE_CONFIRM", "USER_INVITE_REJECT", "USER_INVITE_APPROVE", "USER_INVITE_REMIND", "USER_PASSWORD_CREATE", "USER_PASSWORD_UPDATE", "USER_PASSWORD_RESET", "DOMAIN_UPDATE", "DOMAIN_DELETE", "WORKSPACE_STATISTICS", "INSTANCE_DELETE", "IDENTITY_PROVIDER_DELETE", "DAILY_SCIM_STATISTICS_CALCULATED", "USER_MAILJET_DELETE_FAILURE", "USER_MAILJET_DELETE_SUCCESS"],
+                      description: "Event type" 
+                    },
+                    application: { 
+                      type: "string", 
+                      description: "Application name" 
+                    },
+                    version: { 
+                      type: "string", 
+                      description: "Version" 
+                    },
+                    status: { 
+                      type: "string", 
+                      enum: ["STARTED", "FINISHED"],
+                      description: "Event status" 
+                    },
+                    createdAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Creation timestamp" 
+                    },
+                    finishedAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Finished timestamp" 
+                    },
+                    actor: { 
+                      type: "object", 
+                      description: "Actor user object" 
+                    },
+                    account: { 
+                      type: "object", 
+                      description: "Account object" 
+                    },
+                    user: { 
+                      type: "object", 
+                      description: "User object" 
+                    },
+                    workspace: { 
+                      type: "object", 
+                      description: "Workspace object" 
+                    },
+                    contract: { 
+                      type: "object", 
+                      description: "Contract object" 
+                    },
+                    instance: { 
+                      type: "object", 
+                      description: "Instance object" 
+                    },
+                    identityProvider: { 
+                      type: "object", 
+                      description: "Identity provider object" 
+                    },
+                    payload: { 
+                      type: "object", 
+                      additionalProperties: { type: "object" },
+                      description: "Event payload data" 
+                    },
+                    links: { 
+                      type: "array", 
+                      items: { type: "object" },
+                      description: "Related links" 
+                    }
+                  }
+                },
+                description: "Array of event objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_instance_events",
+          description: "Retrieve all events for a specific instance with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              instance_id: { 
+                type: "string",
+                description: "Instance UUID"
+              },
+              since: { 
+                type: "string",
+                description: "The date offset to fetch events from (ISO 8601 formatted)"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 100, max 100)",
+                default: 100
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            },
+            required: ["instance_id"]
+          },
+          outputSchema: {
+            type: "object",
+            properties: {
+              status: {
+                type: "string",
+                enum: ["OK", "ERROR"],
+                description: "Response status"
+              },
+              type: {
+                type: "string",
+                description: "Response type"
+              },
+              message: {
+                type: "string",
+                description: "Response message"
+              },
+              errors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  description: "API error details"
+                },
+                description: "Array of errors if status is ERROR"
+              },
+              total: {
+                type: "number",
+                format: "int64",
+                description: "Total number of events matching the query"
+              },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["actor", "type"],
+                  properties: {
+                    id: { 
+                      type: "string", 
+                      format: "uuid",
+                      description: "Event UUID" 
+                    },
+                    type: { 
+                      type: "string", 
+                      enum: ["TEST_EVENT", "APITOKEN_CREATE", "APITOKEN_UPDATE", "APITOKEN_DELETE", "ACCOUNT_CREATE", "ACCOUNT_UPDATE", "ACCOUNT_DELETE", "CONTRACT_CREATE", "CONTRACT_UPDATE", "CONTRACT_DELETE", "WORKSPACE_CREATE", "WORKSPACE_UPDATE", "WORKSPACE_DELETE", "WORKSPACE_INITIALIZE", "TECHNICAL_USER_ARCHIVE_PERMISSION", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_WELCOME", "USER_WELCOME_SSO", "USER_LOGIN", "USER_LOGIN_FAILED", "USER_ACCESS_WORKSPACE", "USER_PERMISSION_CREATE", "USER_PERMISSION_UPDATE", "USER_ACTIVATE", "USER_INVITE", "USER_INVITE_CONFIRM", "USER_INVITE_REJECT", "USER_INVITE_APPROVE", "USER_INVITE_REMIND", "USER_PASSWORD_CREATE", "USER_PASSWORD_UPDATE", "USER_PASSWORD_RESET", "DOMAIN_UPDATE", "DOMAIN_DELETE", "WORKSPACE_STATISTICS", "INSTANCE_DELETE", "IDENTITY_PROVIDER_DELETE", "DAILY_SCIM_STATISTICS_CALCULATED", "USER_MAILJET_DELETE_FAILURE", "USER_MAILJET_DELETE_SUCCESS"],
+                      description: "Event type" 
+                    },
+                    application: { 
+                      type: "string", 
+                      description: "Application name" 
+                    },
+                    version: { 
+                      type: "string", 
+                      description: "Version" 
+                    },
+                    status: { 
+                      type: "string", 
+                      enum: ["STARTED", "FINISHED"],
+                      description: "Event status" 
+                    },
+                    createdAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Creation timestamp" 
+                    },
+                    finishedAt: { 
+                      type: "string", 
+                      format: "date-time",
+                      description: "Finished timestamp" 
+                    },
+                    actor: { 
+                      type: "object", 
+                      description: "Actor user object" 
+                    },
+                    account: { 
+                      type: "object", 
+                      description: "Account object" 
+                    },
+                    user: { 
+                      type: "object", 
+                      description: "User object" 
+                    },
+                    workspace: { 
+                      type: "object", 
+                      description: "Workspace object" 
+                    },
+                    contract: { 
+                      type: "object", 
+                      description: "Contract object" 
+                    },
+                    instance: { 
+                      type: "object", 
+                      description: "Instance object" 
+                    },
+                    identityProvider: { 
+                      type: "object", 
+                      description: "Identity provider object" 
+                    },
+                    payload: { 
+                      type: "object", 
+                      additionalProperties: { type: "object" },
+                      description: "Event payload data" 
+                    },
+                    links: { 
+                      type: "array", 
+                      items: { type: "object" },
+                      description: "Related links" 
+                    }
+                  }
+                },
+                description: "Array of event objects"
+              }
+            }
+          }
+        },
+        {
+          name: "get_identity_provider_events",
+          description: "Retrieve all events for a specific identity provider with pagination support.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              identity_provider_id: { 
+                type: "string",
+                description: "Identity provider UUID"
+              },
+              since: { 
+                type: "string",
+                description: "The date offset to fetch events from (ISO 8601 formatted)"
+              },
+              page: { 
+                type: "number",
+                description: "The page number to access (1 indexed, defaults to 1)",
+                default: 1
+              },
+              size: { 
+                type: "number",
+                description: "The page size requested (defaults to 100, max 100)",
+                default: 100
+              },
+              sort: { 
+                type: "string",
+                description: "Comma-separated list of sorting (optional)",
+                default: ""
+              }
+            },
+            required: ["identity_provider_id"]
           },
           outputSchema: {
             type: "object",
@@ -2930,8 +3669,28 @@ async function main() {
         const result = await getInstancesTool(leanix, args);
         return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
       }
-      if (name === "get_events") {
-        const result = await getEventsTool(leanix, args);
+      if (name === "get_account_events") {
+        const result = await getAccountEventsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_workspace_events") {
+        const result = await getWorkspaceEventsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_contract_events") {
+        const result = await getContractEventsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_user_events") {
+        const result = await getUserEventsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_instance_events") {
+        const result = await getInstanceEventsTool(leanix, args);
+        return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
+      }
+      if (name === "get_identity_provider_events") {
+        const result = await getIdentityProviderEventsTool(leanix, args);
         return { content: [{ type: "text", text: JSON.stringify(result) }] } as any;
       }
       if (name === "get_technical_users") {
